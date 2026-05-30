@@ -27,25 +27,28 @@ int Train::getLength() {
     return 0;
   }
 
-  first->light = true;
   countOp = 0;
-  Car* current = first->next;
-  ++countOp;
+  Car* current = first;
+  bool found = false;
 
-  while (!current->light) {
-    current->light = false;
-    current = current->next;
-    ++countOp;
+  while (!found) {
+    if (current->light) {
+      found = true;
+    } else {
+      current->light = true;
+      ++countOp;
+      current = current->next;
+    }
   }
 
   int length = 1;
-  current = first->next;
+  current = current->next;
   ++countOp;
 
   while (current != first) {
     ++length;
-    current = current->next;
     ++countOp;
+    current = current->next;
   }
 
   return length;
