@@ -1,38 +1,56 @@
 // Copyright 2021 NNTU-CS
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
 #include "train.h"
 
-int main() {
-  std::srand(std::time(nullptr));
+Train::Train() : countOp(0), first(nullptr) {}
 
-  std::cout << "n,all_off,all_on,random" << std::endl;
+void Train::addCar(bool light) {
+  Car* new_car = new Car;
+  new_car->light = light;
+  new_car->next = nullptr;
+  new_car->prev = nullptr;
 
-  for (int n = 2; n <= 100; ++n) {
-    Train train_off;
-    for (int i = 0; i < n; ++i) {
-      train_off.addCar(false);
-    }
-    train_off.getLength();
-    int off_ops = train_off.getOpCount();
+  if (first == nullptr) {
+    first = new_car;
+    new_car->next = new_car;
+    new_car->prev = new_car;
+  } else {
+    Car* last = first->prev;
+    last->next = new_car;
+    new_car->prev = last;
+    new_car->next = first;
+    first->prev = new_car;
+  }
+}
 
-    Train train_on;
-    for (int i = 0; i < n; ++i) {
-      train_on.addCar(true);
-    }
-    train_on.getLength();
-    int on_ops = train_on.getOpCount();
-
-    Train train_rand;
-    for (int i = 0; i < n; ++i) {
-      train_rand.addCar(std::rand() % 2 == 0);
-    }
-    train_rand.getLength();
-    int rand_ops = train_rand.getOpCount();
-
-    std::cout << n << "," << off_ops << "," << on_ops << "," << rand_ops << std::endl;
+int Train::getLength() {
+  if (first == nullptr) {
+    return 0;
   }
 
-  return 0;
+  first->light = true;
+  countOp = 0;
+  Car* current = first->next;
+  ++countOp;
+
+  while (!current->light) {
+    current->light = false;
+    current = current->next;
+    ++countOp;
+  }
+
+  int length = 1;
+  current = first->next;
+  ++countOp;
+
+  while (current != first) {
+    ++length;
+    current = current->next;
+    ++countOp;
+  }
+
+  return length;
+}
+
+int Train::getOpCount() const {
+  return countOp;
 }
