@@ -1,77 +1,73 @@
 // Copyright 2021 NNTU-CS
+#include <gtest/gtest.h>
 #include "train.h"
 
-Train::Train() : countOp(0), first(nullptr) {}
+TEST(lab8, test1) {
+  Train train;
+  int count = 2;
 
-void Train::addCar(bool light) {
-  Car* new_car = new Car;
-  new_car->light = light;
-  new_car->next = nullptr;
-  new_car->prev = nullptr;
+  while (count--)
+    train.addCar(false);
 
-  if (first == nullptr) {
-    first = new_car;
-    new_car->next = new_car;
-    new_car->prev = new_car;
-  } else {
-    Car* last = first->prev;
-    last->next = new_car;
-    new_car->prev = last;
-    new_car->next = first;
-    first->prev = new_car;
-  }
+  int len = train.getLength();
+  int op = train.getOpCount();
+
+  ASSERT_EQ(len, 2);
+  ASSERT_EQ(op, 4);
 }
 
-int Train::getLength() {
-  if (first == nullptr) {
-    return 0;
-  }
+TEST(lab8, test2) {
+  Train train;
+  int count = 8;
 
-  countOp = 0;
-  Car* current = first;
-  bool hasLightOn = false;
+  while (count--)
+    train.addCar(false);
 
-  Car* temp = first;
-  for (int i = 0; i < 1000000; ++i) {
-    if (temp->light) {
-      hasLightOn = true;
-      break;
-    }
-    temp = temp->next;
-    if (temp == first) break;
-  }
+  int len = train.getLength();
+  int op = train.getOpCount();
 
-  if (!hasLightOn) {
-    int n = 0;
-    current = first;
-    do {
-      ++n;
-      current = current->next;
-      ++countOp;
-    } while (current != first);
-    return n;
-  }
-
-  while (!current->light) {
-    current->light = true;
-    ++countOp;
-    current = current->next;
-  }
-
-  current->light = false;
-  int length = 1;
-  current = current->next;
-  ++countOp;
-
-  while (!current->light) {
-    ++length;
-    current = current->next;
-    ++countOp;
-  }
-
-  return length;
+  ASSERT_EQ(len, 8);
+  ASSERT_EQ(op, 16);
 }
 
-int Train::getOpCount() const {
-  return countOp;
+TEST(lab8, test3) {
+  Train train;
+  int count = 1000;
+
+  while (count--)
+    train.addCar(false);
+
+  int len = train.getLength();
+  int op = train.getOpCount();
+
+  ASSERT_EQ(len, 1000);
+  ASSERT_EQ(op, 2000);
+}
+
+TEST(lab8, test4) {
+  Train train;
+  int count = 4;
+
+  while (count--)
+    train.addCar(true);
+
+  int len = train.getLength();
+  int op = train.getOpCount();
+
+  ASSERT_EQ(len, 4);
+  ASSERT_EQ(op, 20);
+}
+
+TEST(lab8, test5) {
+  Train train;
+  int count = 6;
+
+  while (count--)
+    train.addCar(true);
+
+  int len = train.getLength();
+  int op = train.getOpCount();
+
+  ASSERT_EQ(len, 6);
+  ASSERT_EQ(op, 42);
 }
