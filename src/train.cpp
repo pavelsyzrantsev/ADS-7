@@ -29,6 +29,28 @@ int Train::getLength() {
 
   countOp = 0;
   Car* current = first;
+  bool hasLightOn = false;
+
+  Car* temp = first;
+  for (int i = 0; i < 1000000; ++i) {
+    if (temp->light) {
+      hasLightOn = true;
+      break;
+    }
+    temp = temp->next;
+    if (temp == first) break;
+  }
+
+  if (!hasLightOn) {
+    int n = 0;
+    current = first;
+    do {
+      ++n;
+      current = current->next;
+      ++countOp;
+    } while (current != first);
+    return n;
+  }
 
   while (!current->light) {
     current->light = true;
