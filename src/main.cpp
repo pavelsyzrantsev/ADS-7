@@ -31,7 +31,8 @@ int main() {
     train_rand.getLength();
     int rand_ops = train_rand.getOpCount();
 
-    std::cout << n << "," << off_ops << "," << on_ops << "," << rand_ops << std::endl;
+    std::cout << n << "," << off_ops << "," << on_ops
+              << "," << rand_ops << std::endl;
   }
 
   return 0;
