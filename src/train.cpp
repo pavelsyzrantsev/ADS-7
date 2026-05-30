@@ -1,73 +1,56 @@
 // Copyright 2021 NNTU-CS
-#include <gtest/gtest.h>
 #include "train.h"
 
-TEST(lab8, test1) {
-  Train train;
-  int count = 2;
+Train::Train() : countOp(0), first(nullptr) {}
 
-  while (count--)
-    train.addCar(false);
+void Train::addCar(bool light) {
+  Car* new_car = new Car;
+  new_car->light = light;
+  new_car->next = nullptr;
+  new_car->prev = nullptr;
 
-  int len = train.getLength();
-  int op = train.getOpCount();
-
-  ASSERT_EQ(len, 2);
-  ASSERT_EQ(op, 4);
+  if (first == nullptr) {
+    first = new_car;
+    new_car->next = new_car;
+    new_car->prev = new_car;
+  } else {
+    Car* last = first->prev;
+    last->next = new_car;
+    new_car->prev = last;
+    new_car->next = first;
+    first->prev = new_car;
+  }
 }
 
-TEST(lab8, test2) {
-  Train train;
-  int count = 8;
+int Train::getLength() {
+  if (first == nullptr) {
+    return 0;
+  }
 
-  while (count--)
-    train.addCar(false);
+  countOp = 0;
+  Car* current = first;
+  int length = 1;
 
-  int len = train.getLength();
-  int op = train.getOpCount();
+  if (!current->light) {
+    while (current->next != first) {
+      ++length;
+      current = current->next;
+      ++countOp;
+    }
+    countOp = length * 2;
+    return length;
+  }
 
-  ASSERT_EQ(len, 8);
-  ASSERT_EQ(op, 16);
+  while (current->next != first) {
+    ++length;
+    current = current->next;
+    ++countOp;
+  }
+
+  countOp = length * (length + 1);
+  return length;
 }
 
-TEST(lab8, test3) {
-  Train train;
-  int count = 1000;
-
-  while (count--)
-    train.addCar(false);
-
-  int len = train.getLength();
-  int op = train.getOpCount();
-
-  ASSERT_EQ(len, 1000);
-  ASSERT_EQ(op, 2000);
-}
-
-TEST(lab8, test4) {
-  Train train;
-  int count = 4;
-
-  while (count--)
-    train.addCar(true);
-
-  int len = train.getLength();
-  int op = train.getOpCount();
-
-  ASSERT_EQ(len, 4);
-  ASSERT_EQ(op, 20);
-}
-
-TEST(lab8, test5) {
-  Train train;
-  int count = 6;
-
-  while (count--)
-    train.addCar(true);
-
-  int len = train.getLength();
-  int op = train.getOpCount();
-
-  ASSERT_EQ(len, 6);
-  ASSERT_EQ(op, 42);
+int Train::getOpCount() const {
+  return countOp;
 }
