@@ -32,6 +32,7 @@ int Train::getLength() {
   int length = 1;
 
   if (!first->light) {
+    // cppcheck-suppress constVariablePointer
     Car* current = first;
     while (current->next != first) {
       ++length;
@@ -42,6 +43,7 @@ int Train::getLength() {
     return length;
   }
 
+  // cppcheck-suppress constVariablePointer
   Car* current = first;
   while (current->next != first) {
     ++length;
@@ -56,4 +58,3 @@ int Train::getLength() {
 int Train::getOpCount() const {
   return countOp;
 }
-
